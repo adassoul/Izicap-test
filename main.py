@@ -68,8 +68,7 @@ hero_name_input = "/html/body/app-root/div/app-my-heroes-page/div[2]/div[1]/form
 alter_ego_input = "/html/body/app-root/div/app-my-heroes-page/div[2]/div[1]/form/mat-form-field[2]/div/div[1]/div/input"
 create_hero_button = "/html/body/app-root/div/app-my-heroes-page/div[2]/div[1]/form/button"
 create_hero_button = "/html/body/app-root/div/app-my-heroes-page/div[2]/div[1]/form/button"
-
-pop_up_xpath = "/html/body/div[2]/div/div/snack-bar-container/div/div/simple-snack-bar" #notsure
+creation_pop_up_message = "/html/body/div[2]/div/div/snack-bar-container/div/div/simple-snack-bar"
         #test
 def tests_hero_creation(browser):
     test_goal = "hero creation test"
@@ -79,13 +78,37 @@ def tests_hero_creation(browser):
     type_text_in_element(browser, f"super {name}", hero_name_input)
     type_text_in_element(browser, f"cool {alter_ego}", alter_ego_input)
     click_on_element(browser, create_hero_button)
+    #popup
     sleep(2)
-    pop_up_text = browser.find_element(By.XPATH, pop_up_xpath).get_attribute("innerHTML")
+    pop_up_text = browser.find_element(By.XPATH, creation_pop_up_message).get_attribute("innerHTML")
     try:
         assert "Hero created" in pop_up_text
         ok_message(test_goal)
     except AssertionError:
         ko_message(test_goal)
+#
+    #3
+        #vars
+delete_button = "/html/body/app-root/div/app-my-heroes-page/div[1]/div/mat-list/mat-list-item[1]/span/div/mat-icon"
+confirm_deletion_button = "/html/body/div[2]/div[2]/div/mat-dialog-container/app-hero-remove/mat-dialog-actions/button[2]"
+deletion_popup_message = "/html/body/div[2]/div/div/snack-bar-container/div/div/simple-snack-bar/span"
+        #test
+def tests_hero_deletion(browser):
+    test_goal = "hero deletion test"
+    #page1
+    click_on_element(browser, delete_button)
+    #popup prompt
+    click_on_element(browser, confirm_deletion_button)
+    #popup message
+    sleep(2)
+    popup_deletion_message = browser.find_element(By.XPATH, deletion_popup_message).get_attribute("innerHTML")
+    try:
+        assert "Hero removed" in popup_deletion_message
+        ok_message(test_goal)
+    except AssertionError:
+        ko_message(test_goal)
+
+
 
 #main
 def main():
@@ -99,7 +122,9 @@ def main():
         #2
         sleep(2)
         tests_hero_creation(browser)
-
+        #3
+        sleep(2)
+        tests_hero_deletion(browser)
         #end
         sleep(5)
 

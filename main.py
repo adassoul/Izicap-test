@@ -4,6 +4,9 @@ from selenium import webdriver
 
 from selenium.webdriver.common.by import By
 import string
+
+from datetime import datetime
+
 waiting_period = 20
 
 def ok_message(message):
@@ -55,6 +58,7 @@ sign_up_button_page2 = "/html/body/app-root/div/app-sign-up-page/div/mat-card/di
 sign_up_confirmation_pop_up_message = "/html/body/div[2]/div/div/snack-bar-container/div/div/simple-snack-bar/span"
         #test
 def tests_account_creation(browser):
+    time = datetime.now()
     test_goal = "account creation test"
     #page1
     click_on_element(browser, sign_up_button)
@@ -71,8 +75,10 @@ def tests_account_creation(browser):
     try:
         assert "Cool! Now try to log in" in pop_up_message
         ok_message(test_goal)
+        return [True, datetime.now()-time]
     except AssertionError:
         ko_message(test_goal)
+        return [False, datetime.now()-time]
 #
     #2
         #vars
@@ -85,6 +91,7 @@ log_in_button_page2 = "/html/body/app-root/div/app-log-in-page/div/mat-card/div/
 my_heroes_title_in_homepage = "#left > h2"
         #test
 def tests_login(browser):
+    time = datetime.now()
     test_goal = "login test"
     #page_1
     click_on_element(browser, login_button, "css_selector")
@@ -99,8 +106,10 @@ def tests_login(browser):
     try:
         assert "My heroes" in my_heroes_title
         ok_message(test_goal)
+        return [True, datetime.now() - time]
     except AssertionError:
         ko_message(test_goal)
+        return [False, datetime.now() - time]
 #
     #3
         #vars
@@ -111,6 +120,7 @@ create_hero_button = "/html/body/app-root/div/app-my-heroes-page/div[2]/div[1]/f
 creation_pop_up_message = "/html/body/div[2]/div/div/snack-bar-container/div/div/simple-snack-bar"
         #test
 def tests_hero_creation(browser):
+    time = datetime.now()
     test_goal = "hero creation test"
     name = "".join(random.choices(string.ascii_letters, k=9))
     alter_ego = "".join(random.choices(string.ascii_letters, k=9))
@@ -124,8 +134,10 @@ def tests_hero_creation(browser):
     try:
         assert "Hero created" in pop_up_text
         ok_message(test_goal)
+        return [True, datetime.now() - time]
     except AssertionError:
         ko_message(test_goal)
+        return [False, datetime.now() - time]
 #
     #4
         #vars
@@ -134,6 +146,7 @@ confirm_deletion_button = "/html/body/div[2]/div[2]/div/mat-dialog-container/app
 deletion_popup_message = "/html/body/div[2]/div/div/snack-bar-container/div/div/simple-snack-bar/span"
         #test
 def tests_hero_deletion(browser):
+    time = datetime.now()
     test_goal = "hero deletion test"
     #page1
     click_on_element(browser, delete_button)
@@ -145,8 +158,10 @@ def tests_hero_deletion(browser):
     try:
         assert "Hero removed" in popup_deletion_message
         ok_message(test_goal)
+        return [True, datetime.now() - time]
     except AssertionError:
         ko_message(test_goal)
+        return [False, datetime.now() - time]
 #
 
 #main

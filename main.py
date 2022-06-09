@@ -1,9 +1,9 @@
+import random
 from time import sleep
 from selenium import webdriver
 
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+import string
 waiting_period = 20
 
 def ok_message(message):
@@ -11,18 +11,19 @@ def ok_message(message):
 def ko_message(message):
     print(f"------Knocked Out------ : {message} didn't pass...")
 
-def click_on_element(browser, selector, method):
+def click_on_element(browser, selector, method="full_xpath"):
     if method == "css_selector":
         browser.find_element(By.CSS_SELECTOR, selector).click()
     elif method == "full_xpath" or method == "xpath":
         browser.find_element(By.XPATH, selector).click()
-def type_text_in_element(browser, text, selector, method):
+def type_text_in_element(browser, text, selector, method="full_xpath"):
     if method == "css_selector":
         browser.find_element(By.CSS_SELECTOR, selector).send_keys(text)
     elif method == "full_xpath" or method == "xpath":
         browser.find_element(By.XPATH, selector).send_keys(text)
 
 #tests
+#
     #0
 def verify_title(browser):
     test_goal = "title verif"
@@ -32,6 +33,7 @@ def verify_title(browser):
         ok_message(test_goal)
     except AssertionError:
         ko_message(test_goal)
+#
     #1
         #vars
 login_button = "body > app-root > div > app-header > header > nav > div > div:nth-child(1) > a:nth-child(2)"
@@ -59,8 +61,31 @@ def tests_login(browser):
         ok_message(test_goal)
     except AssertionError:
         ko_message(test_goal)
+#
+    #2
+        #vars
+hero_name_input = "/html/body/app-root/div/app-my-heroes-page/div[2]/div[1]/form/mat-form-field[1]/div/div[1]/div/input"
+alter_ego_input = "/html/body/app-root/div/app-my-heroes-page/div[2]/div[1]/form/mat-form-field[2]/div/div[1]/div/input"
+create_hero_button = "/html/body/app-root/div/app-my-heroes-page/div[2]/div[1]/form/button"
+create_hero_button = "/html/body/app-root/div/app-my-heroes-page/div[2]/div[1]/form/button"
 
-
+pop_up_xpath = "/html/body/div[2]/div/div/snack-bar-container/div/div/simple-snack-bar" #notsure
+        #test
+def tests_hero_creation(browser):
+    test_goal = "hero creation test"
+    name = "".join(random.choices(string.ascii_letters, k=9))
+    alter_ego = "".join(random.choices(string.ascii_letters, k=9))
+    #page_1
+    type_text_in_element(browser, f"super {name}", hero_name_input)
+    type_text_in_element(browser, f"cool {alter_ego}", alter_ego_input)
+    click_on_element(browser, create_hero_button)
+    sleep(2)
+    pop_up_text = browser.find_element(By.XPATH, pop_up_xpath).get_attribute("innerHTML")
+    try:
+        assert "Hero created" in pop_up_text
+        ok_message(test_goal)
+    except AssertionError:
+        ko_message(test_goal)
 
 #main
 def main():
@@ -71,18 +96,11 @@ def main():
         #1
         sleep(2)
         tests_login(browser)
-        # click_on_element(browser, login_button, "css_selector")
-        # sleep(4)
-        # print("hehehe")
-        # browser.find_element(By.XPATH, mail_input_full_XPATH).send_keys(mail)
-        # browser.find_element(By.XPATH, psswrd_input_full_XPATH).send_keys(psswrd)
-        # sleep(4)
+        #2
+        sleep(2)
+        tests_hero_creation(browser)
 
-        # browser.find_element(By.CSS_SELECTOR, mail_input).send_keys(mail)
-        # sleep(waiting_period)
-        # browser.find_element(By.CSS_SELECTOR, "#mat-input-0").send_keys("yoo")
-
-
+        #end
         sleep(5)
 
 

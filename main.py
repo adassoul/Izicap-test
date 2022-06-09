@@ -22,6 +22,12 @@ def type_text_in_element(browser, text, selector, method="full_xpath"):
     elif method == "full_xpath" or method == "xpath":
         browser.find_element(By.XPATH, selector).send_keys(text)
 
+def random_word_generator(length):
+    return "".join(random.choices(string.ascii_letters, k=length))+"Ad2"
+
+def random_psswrd_generator(length):
+    return "".join(random.choices(string.ascii_letters, k=length))+"Ae9"
+
 #tests
 #
     #0
@@ -107,26 +113,61 @@ def tests_hero_deletion(browser):
         ok_message(test_goal)
     except AssertionError:
         ko_message(test_goal)
-
-
+#
+    #4
+        #vars
+sign_up_button = "/html/body/app-root/div/app-header/header/nav/div/div[1]/a[3]"
+first_name_input = "/html/body/app-root/div/app-sign-up-page/div/mat-card/div/form/p[1]/mat-form-field/div/div[1]/div[3]/input"
+first_name_random = random_word_generator(6)
+last_name_input = "/html/body/app-root/div/app-sign-up-page/div/mat-card/div/form/p[2]/mat-form-field/div/div[1]/div[3]/input"
+last_name_random = random_word_generator(10)
+mail_input_sign_up = "/html/body/app-root/div/app-sign-up-page/div/mat-card/div/form/p[3]/mat-form-field/div/div[1]/div[3]/input"
+mail_sign_up = ".".join([first_name_random, last_name_random])+"@test.com"
+psswrd_input_sign_up = "/html/body/app-root/div/app-sign-up-page/div/mat-card/div/form/p[4]/mat-form-field/div/div[1]/div[3]/input"
+psswrd_sign_up = random_psswrd_generator(9)
+sign_up_button_page2 = "/html/body/app-root/div/app-sign-up-page/div/mat-card/div/form/p[5]/button"
+sign_up_confirmation_pop_up_message = "/html/body/div[2]/div/div/snack-bar-container/div/div/simple-snack-bar/span"
+        #test
+def tests_account_creation(browser):
+    test_goal = "account creation test"
+    #page1
+    click_on_element(browser, sign_up_button)
+    #page2
+    sleep(2)
+    type_text_in_element(browser, first_name_random, first_name_input)
+    type_text_in_element(browser, last_name_random, last_name_input)
+    type_text_in_element(browser, mail_sign_up ,mail_input_sign_up)
+    type_text_in_element(browser, psswrd_sign_up, psswrd_input_sign_up)
+    click_on_element(browser, sign_up_button_page2)
+    #popup
+    sleep(2)
+    pop_up_message = browser.find_element(By.XPATH, sign_up_confirmation_pop_up_message).get_attribute("innerHTML")
+    try:
+        assert "Cool! Now try to log in" in pop_up_message
+        ok_message(test_goal)
+    except AssertionError:
+        ko_message(test_goal)
 
 #main
 def main():
     with webdriver.Chrome() as browser:
         browser.get("https://ismaestro.github.io/angular-example-app/")
-        #0
-        verify_title(browser)
-        #1
+        # #0
+        # verify_title(browser)
+        # #1
+        # sleep(2)
+        # tests_login(browser)
+        # #2
+        # sleep(2)
+        # tests_hero_creation(browser)
+        # #3
+        # sleep(2)
+        # tests_hero_deletion(browser)
+        #4
         sleep(2)
-        tests_login(browser)
-        #2
-        sleep(2)
-        tests_hero_creation(browser)
-        #3
-        sleep(2)
-        tests_hero_deletion(browser)
+        tests_account_creation(browser)
         #end
-        sleep(5)
+        sleep(20)
 
 
 #launch

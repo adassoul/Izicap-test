@@ -31,6 +31,63 @@ def random_word_generator(length):
 def random_psswrd_generator(length):
     return "".join(random.choices(string.ascii_letters, k=length))+"Ae9"
 
+def generate_html_report(lists):
+    titles_of_tests = []
+    states_of_tests = []
+    durations_of_tests = []
+    for li in lists:
+        titles_of_tests.append(li[0])
+        states_of_tests.append(li[1])
+        durations_of_tests.append(li[2])
+
+    html = f'''
+        <html>
+        <head>
+          <title>Test Report</title>
+        </head>
+        <body>
+          <h1>Test Report</h1>
+          <br>
+          <h3>{titles_of_tests[0]}</h3>
+          <p>
+            <span>Duration : {durations_of_tests[0]}</span>
+          </p>
+          <p>
+            <span style="background-color:{"#71ef09" if states_of_tests[1]=="True" else "#d30606"}">Test state : {"passed" if states_of_tests[0]=="True" else "failed"}</span>
+          </p>
+          <br>
+          <h3>{titles_of_tests[1]}</h3>
+          <p>
+            <span>Duration : {durations_of_tests[1]}</span>
+          </p>
+          <p>
+            <span style="background-color:{"#71ef09" if states_of_tests[1]=="True" else "#d30606"}">Test state : {"passed" if states_of_tests[1]=="True" else "failed"}</span>
+          </p>
+          <br>
+          <h3>{titles_of_tests[2]}</h3>
+          <p>
+            <span>Duration : {durations_of_tests[2]}</span>
+          </p>
+          <p>
+            <span style="background-color:{"#71ef09" if states_of_tests[1]=="True" else "#d30606"}">Test state : {"passed" if states_of_tests[2]=="True" else "failed"}</span>
+          </p>
+          <br>
+          <h3>{titles_of_tests[3]}</h3>
+          <p>
+            <span>Duration : {durations_of_tests[3]}</span>
+          </p>
+          <p>
+            <span style="background-color:{"#71ef09" if states_of_tests[1]=="True" else "#d30606"}">Test state : {"passed" if states_of_tests[3]=="True" else "failed"}</span>
+          </p>
+        </body>
+        </html>
+    '''
+    date_now = datetime.now().strftime("%d%m%y_%H%M%S")
+    file_path = f"html_reports/html_report_{date_now}.html"
+    with open(file_path, "w") as f:
+        f.write(html)
+
+
 #tests
 #
     #0
@@ -59,7 +116,7 @@ sign_up_confirmation_pop_up_message = "/html/body/div[2]/div/div/snack-bar-conta
         #test
 def tests_account_creation(browser):
     time = datetime.now()
-    test_goal = "account creation test"
+    test_goal = "Account creation test"
     #page1
     click_on_element(browser, sign_up_button)
     #page2
@@ -75,10 +132,10 @@ def tests_account_creation(browser):
     try:
         assert "Cool! Now try to log in" in pop_up_message
         ok_message(test_goal)
-        return [True, datetime.now()-time]
+        return [test_goal, str(True), str(datetime.now()-time)]
     except AssertionError:
         ko_message(test_goal)
-        return [False, datetime.now()-time]
+        return [test_goal, str(False), str(datetime.now()-time)]
 #
     #2
         #vars
@@ -92,7 +149,7 @@ my_heroes_title_in_homepage = "#left > h2"
         #test
 def tests_login(browser):
     time = datetime.now()
-    test_goal = "login test"
+    test_goal = "Login test"
     #page_1
     click_on_element(browser, login_button, "css_selector")
     #page_2
@@ -106,10 +163,10 @@ def tests_login(browser):
     try:
         assert "My heroes" in my_heroes_title
         ok_message(test_goal)
-        return [True, datetime.now() - time]
+        return [test_goal, str(True), str(datetime.now() - time)]
     except AssertionError:
         ko_message(test_goal)
-        return [False, datetime.now() - time]
+        return [test_goal, str(False), str(datetime.now() - time)]
 #
     #3
         #vars
@@ -121,7 +178,7 @@ creation_pop_up_message = "/html/body/div[2]/div/div/snack-bar-container/div/div
         #test
 def tests_hero_creation(browser):
     time = datetime.now()
-    test_goal = "hero creation test"
+    test_goal = "Hero creation test"
     name = "".join(random.choices(string.ascii_letters, k=9))
     alter_ego = "".join(random.choices(string.ascii_letters, k=9))
     #page_1
@@ -134,10 +191,10 @@ def tests_hero_creation(browser):
     try:
         assert "Hero created" in pop_up_text
         ok_message(test_goal)
-        return [True, datetime.now() - time]
+        return [test_goal, str(True), str(datetime.now() - time)]
     except AssertionError:
         ko_message(test_goal)
-        return [False, datetime.now() - time]
+        return [test_goal, str(False), str(datetime.now() - time)]
 #
     #4
         #vars
@@ -147,7 +204,7 @@ deletion_popup_message = "/html/body/div[2]/div/div/snack-bar-container/div/div/
         #test
 def tests_hero_deletion(browser):
     time = datetime.now()
-    test_goal = "hero deletion test"
+    test_goal = "Hero deletion test"
     #page1
     click_on_element(browser, delete_button)
     #popup prompt
@@ -158,10 +215,10 @@ def tests_hero_deletion(browser):
     try:
         assert "Hero removed" in popup_deletion_message
         ok_message(test_goal)
-        return [True, datetime.now() - time]
+        return [test_goal, str(True), str(datetime.now() - time)]
     except AssertionError:
         ko_message(test_goal)
-        return [False, datetime.now() - time]
+        return [test_goal, str(False), str(datetime.now() - time)]
 #
 
 #main
@@ -172,16 +229,23 @@ def main():
         verify_title(browser)
         #1
         sleep(2)
-        tests_account_creation(browser)
+        test_1_return_list = tests_account_creation(browser)
         #2
         sleep(2)
-        tests_login(browser)
+        test_2_return_list = tests_login(browser)
         #3
         sleep(2)
-        tests_hero_creation(browser)
+        test_3_return_list = tests_hero_creation(browser)
         #4
         sleep(2)
-        tests_hero_deletion(browser)
+        test_4_return_list = tests_hero_deletion(browser)
+
+        all_test_return_lists = [test_1_return_list, test_2_return_list, test_3_return_list, test_4_return_list]
+        #report
+        generate_html_report(all_test_return_lists)
+
+
+
         #end
         sleep(20)
 
